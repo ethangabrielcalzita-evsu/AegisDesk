@@ -1,0 +1,2 @@
+INFO 2026-05-31 15:00:07,400 models [User:System_Automated_API] New incident registered. Title: 'Brute Force Attempts Detected' for Asset: Primary_AD_Server
+INFO 2026-05-31 15:00:07,414 models [User:System_Automated_API] New incident registered. Title: 'S3 Object Exposure Leak' for Asset: AWS_S3_PII_Bucket
