@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block title %}Ticket Submitted{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center text-center mt-5">
+    <div class="col-xl-6 col-lg-7 col-md-9">
+        <div class="card aegis-card shadow-lg border-gold border-3">
+            <div class="card-body p-5">
+                <div class="mb-4">
+                    <span class="badge badge-gold py-2 px-3 mb-3">Success</span>
+                    <h2 class="page-title">Ticket Submitted</h2>
+                </div>
+                <p class="lead text-muted mb-4">Your incident report has been securely received and added to the AegisDesk response workflow.</p>
+                <div class="d-flex flex-column flex-sm-row justify-content-center gap-3">
+                    <a href="{% url 'submit_ticket' %}" class="btn btn-gold px-4 py-2">Log Another Ticket</a>
+                    <a href="{% url 'my_tickets' %}" class="btn btn-outline-gold px-4 py-2">View My Tickets</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

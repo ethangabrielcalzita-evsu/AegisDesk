@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}AegisDesk{% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+    <style>
+        :root {
+            --brand-gold: #d4af37;
+            --brand-gold-dark: #b48f1f;
+            --bg-dark: #061123;
+            --panel: rgba(10, 18, 34, 0.96);
+            --panel-soft: rgba(16, 26, 45, 0.92);
+            --text-light: #f6f0df;
+            --text-muted: #c5b690;
+            --border-soft: rgba(212, 175, 55, 0.18);
+            --text-dark: #1e1b11;
+            --panel-light: #ffffff;
+            --panel-light-soft: rgba(255, 252, 239, 0.9);
+            --text-muted-light: #7d6b39;
+        }
+        * { box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body {
+            margin: 0;
+            min-height: 100vh;
+            font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            color: var(--text-light);
+            background: radial-gradient(circle at top right, rgba(212, 175, 55, 0.15), transparent 28%), linear-gradient(180deg, #08101f 0%, #061123 50%, #0b1728 100%);
+        }
+        a { color: var(--brand-gold); }
+        a:hover { color: #f8e5a8; text-decoration: none; }
+        .navbar { background: rgba(7, 12, 24, 0.98) !important; border-bottom: 1px solid rgba(212, 175, 55, 0.14); }
+        .navbar-brand { color: var(--brand-gold) !important; font-weight: 700; letter-spacing: 0.14em; }
+        .nav-link { color: #dcd3b6 !important; margin-right: 0.5rem; }
+        .nav-link:hover, .nav-link.active { color: var(--brand-gold) !important; }
+        .navbar-text { color: var(--text-muted); }
+        .container { max-width: 1140px; }
+        .aegis-card {
+            border-radius: 1.25rem;
+            background: var(--panel);
+            border: 1px solid var(--border-soft);
+            box-shadow: 0 24px 56px rgba(0, 0, 0, 0.22);
+        }
+        .page-title, .section-title { color: #ffffff; }
+        .hero-panel {
+            background: linear-gradient(180deg, rgba(212,175,55,0.16), rgba(255,255,255,0.04));
+            border: 1px solid rgba(212,175,55,0.18);
+        }
+        .btn-gold {
+            background: var(--brand-gold);
+            border-color: var(--brand-gold-dark);
+            color: #111;
+        }
+        .btn-gold:hover, .btn-gold:focus { background: var(--brand-gold-dark); border-color: var(--brand-gold); color: #111; }
+        .btn-outline-gold {
+            border-color: var(--brand-gold);
+            color: var(--brand-gold);
+            background: transparent;
+        }
+        .btn-outline-gold:hover { background: rgba(212,175,55,0.12); color: #fff; }
+        .badge-gold { background: var(--brand-gold); color: #111; }
+        .border-gold { border-color: var(--brand-gold) !important; }
+        .form-control, .form-select,
+        .form-control:focus, .form-select:focus {
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(212,175,55,0.14);
+            color: var(--text-light);
+            box-shadow: none;
+        }
+        .form-control::placeholder { color: rgba(255,255,255,0.5); }
+        .form-label, .text-muted { color: var(--text-muted) !important; }
+        .card-header {
+            background: rgba(255,215,0,0.06);
+            border-bottom: 1px solid rgba(255,215,0,0.14);
+            color: var(--text-light);
+        }
+        .alert {
+            border: 1px solid rgba(212,175,55,0.22);
+            background: rgba(212,175,55,0.1);
+            color: #efe7c1;
+        }
+        .table {
+            color: var(--text-light);
+            background-color: rgba(255,255,255,0.02);
+        }
+        .table th,
+        .table td {
+            border-color: rgba(255,255,255,0.12);
+        }
+        .table thead th { color: #f5ecd7; border-bottom: 1px solid rgba(255,255,255,0.12); }
+        .table tbody tr:hover { background: rgba(255,215,0,0.10); }
+        .navbar-dark .navbar-toggler-icon {
+            filter: invert(1) brightness(1.2);
+        }
+        .small-note { color: var(--text-muted); }
+        footer { margin-top: 3rem; text-align: center; color: #a89f85; font-size: 0.92rem; }
+        html.light-mode body {
+            color: var(--text-dark);
+            background: linear-gradient(180deg, #faf9f4 0%, #f1efe5 50%, #e7e4d8 100%);
+        }
+        html.light-mode a { color: var(--brand-gold); }
+        html.light-mode a:hover { color: #ad8e2c; }
+        html.light-mode .navbar { background: rgba(255,255,255,0.96) !important; border-bottom-color: rgba(212,175,55,0.28); }
+        html.light-mode .navbar-brand { color: #5f4620 !important; }
+        html.light-mode .nav-link { color: #5f4a1d !important; }
+        html.light-mode .nav-link:hover, html.light-mode .nav-link.active { color: var(--brand-gold) !important; }
+        html.light-mode .navbar-text { color: var(--text-muted-light); }
+        html.light-mode .aegis-card {
+            background: var(--panel-light);
+            border: 1px solid rgba(212,175,55,0.22);
+            box-shadow: 0 18px 40px rgba(0,0,0,0.08);
+        }
+        html.light-mode .page-title, html.light-mode .section-title { color: var(--text-dark); }
+        html.light-mode .hero-panel {
+            background: rgba(255,248,224,0.95);
+            border-color: rgba(212,175,55,0.22);
+        }
+        html.light-mode .form-control, html.light-mode .form-select,
+        html.light-mode .form-control:focus, html.light-mode .form-select:focus {
+            background: #fff;
+            border: 1px solid rgba(212,175,55,0.26);
+            color: var(--text-dark);
+        }
+        html.light-mode .form-control::placeholder { color: rgba(0,0,0,0.35); }
+        html.light-mode .form-label { color: var(--text-muted-light); }
+        html.light-mode .card-header {
+            background: rgba(212,175,55,0.12);
+            border-bottom-color: rgba(212,175,55,0.22);
+            color: var(--text-dark);
+        }
+        html.light-mode .alert {
+            border: 1px solid rgba(212,175,55,0.26);
+            background: rgba(255,244,217,0.9);
+            color: #4b3d13;
+        }
+        html.light-mode .table {
+            color: var(--text-dark);
+            background-color: #ffffff;
+        }
+        html.light-mode .table th,
+        html.light-mode .table td {
+            border-color: rgba(0,0,0,0.08);
+        }
+        html.light-mode .table thead th { color: #5f4a17; border-bottom-color: rgba(212,175,55,0.18); }
+        html.light-mode .table tbody tr:hover { background: rgba(212,175,55,0.14); }
+        html.light-mode .small-note { color: var(--text-muted-light); }
+        html.light-mode footer { color: #7d6b39; }
+        html.light-mode .btn-outline-gold:hover { background: rgba(212,175,55,0.18); color: #111; }
+        html.light-mode .navbar-toggler-icon {
+            filter: invert(0) brightness(0.75);
+        }
+        html.light-mode .text-muted { color: var(--text-muted-light) !important; }
+        .password-field-wrapper {
+            position: relative;
+        }
+        .password-field-wrapper input.form-control,
+        .password-field-wrapper textarea.form-control {
+            padding-right: 4rem !important;
+        }
+        .password-field-wrapper .password-toggle {
+            position: absolute;
+            top: 50%;
+            right: 0.6rem;
+            transform: translateY(-50%);
+            border: none;
+            background: rgba(255,255,255,0.08);
+            color: var(--text-light);
+            padding: 0.35rem 0.65rem;
+            border-radius: 0.55rem;
+            cursor: pointer;
+            font-size: 0.95rem;
+            line-height: 1;
+            z-index: 10;
+            min-width: 2.4rem;
+            text-align: center;
+        }
+        .password-field-wrapper .password-toggle:hover,
+        .password-field-wrapper .password-toggle:focus {
+            background: rgba(212,175,55,0.16);
+            color: #fff;
+        }
+        .theme-button {
+            min-width: 98px;
+            letter-spacing: 0.01em;
+        }
+    </style>
+    <script>
+        (function() {
+            try {
+                var stored = localStorage.getItem('aegisdesk-theme');
+                if (stored === 'light') {
+                    document.documentElement.classList.add('light-mode');
+                } else if (stored === 'dark') {
+                    document.documentElement.classList.remove('light-mode');
+                } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) {
+                    document.documentElement.classList.add('light-mode');
+                }
+            } catch (e) {
+                console.warn(e);
+            }
+        })();
+    </script>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-dark">
+    <div class="container py-2">
+        <a class="navbar-brand" href="{% url 'submit_ticket' %}">AegisDesk</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                {% if user.is_authenticated %}
+                    <li class="nav-item"><a class="nav-link" href="{% url 'submit_ticket' %}">Submit Ticket</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'my_tickets' %}">My Tickets</a></li>
+                    {% if user.is_staff %}
+                        <li class="nav-item"><a class="nav-link" href="{% url 'manager_dashboard' %}">Manager Dashboard</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{% url 'ticket_list' %}">Incident Queue</a></li>
+                    {% endif %}
+                {% endif %}
+            </ul>
+            <ul class="navbar-nav align-items-center">
+                <li class="nav-item me-2">
+                    <button id="themeToggleButton" class="btn btn-sm btn-outline-gold theme-button" type="button">Toggle Theme</button>
+                </li>
+                {% if user.is_authenticated %}
+                    <li class="nav-item me-3"><span class="navbar-text">Signed in as {{ user.username }}</span></li>
+                    <li class="nav-item">
+                        <form method="post" action="{% url 'logout' %}" class="d-inline m-0">
+                            {% csrf_token %}
+                            <button type="submit" class="nav-link btn btn-sm btn-outline-gold text-white">Logout</button>
+                        </form>
+                    </li>
+                {% else %}
+                    <li class="nav-item"><a class="nav-link btn btn-sm btn-outline-gold text-white" href="{% url 'login' %}">Login</a></li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+</nav>
+<div class="container py-4">
+    {% if messages %}
+        <div class="mb-4">
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show rounded-4" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+    {% block content %}{% endblock %}
+</div>
+<footer>
+    <small>AegisDesk • IT Helpdesk & Security Incident Tracker</small>
+</footer>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous"></script>
+<script>
+    (function() {
+        var toggle = document.getElementById('themeToggleButton');
+        function updateToggleText() {
+            if (!toggle) return;
+            if (document.documentElement.classList.contains('light-mode')) {
+                toggle.textContent = 'Dark Mode';
+                toggle.setAttribute('aria-label', 'Switch to dark mode');
+            } else {
+                toggle.textContent = 'Light Mode';
+                toggle.setAttribute('aria-label', 'Switch to light mode');
+            }
+        }
+        function setTheme(theme) {
+            if (theme === 'light') {
+                document.documentElement.classList.add('light-mode');
+            } else {
+                document.documentElement.classList.remove('light-mode');
+            }
+            localStorage.setItem('aegisdesk-theme', theme);
+            updateToggleText();
+        }
+        if (toggle) {
+            updateToggleText();
+            toggle.addEventListener('click', function() {
+                var next = document.documentElement.classList.contains('light-mode') ? 'dark' : 'light';
+                setTheme(next);
+            });
+        }
+        document.querySelectorAll('.password-toggle').forEach(function(button) {
+            button.addEventListener('click', function() {
+                var wrapper = button.closest('.password-field-wrapper');
+                if (!wrapper) return;
+                var input = wrapper.querySelector('input[type="password"], input[type="text"]');
+                if (!input) return;
+                if (input.type === 'password') {
+                    input.type = 'text';
+                    button.textContent = '🙈';
+                    button.setAttribute('aria-label', 'Hide password');
+                } else {
+                    input.type = 'password';
+                    button.textContent = '👁';
+                    button.setAttribute('aria-label', 'Show password');
+                }
+            });
+        });
+    })();
+</script>
+</body>
+</html>

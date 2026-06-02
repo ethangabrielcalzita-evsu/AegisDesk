@@ -27,7 +27,9 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
-LOGIN_URL = '/admin/login/'
+LOGIN_URL = '/accounts/login/'
+LOGIN_REDIRECT_URL = '/incidents/submit/'
+LOGOUT_REDIRECT_URL = '/accounts/login/'
 
 
 # Application definition
@@ -90,10 +92,12 @@ DATABASES = {
 
 CACHES = {
     'default': {
-        'BACKEND': 'django.core.cache.backends.db.DatabaseCache',
-        'LOCATION': 'aegis_ratelimit_cache_table',
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+        'LOCATION': 'aegisdesk-cache',
     }
 }
+
+RATELIMIT_USE_CACHE = 'default'
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
@@ -177,9 +181,20 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+# Security settings
+SECURE_BROWSER_XSS_FILTER = True
+SECURE_CONTENT_TYPE_NOSNIFF = True
+X_FRAME_OPTIONS = 'DENY'
+CSRF_COOKIE_HTTPONLY = True
+SESSION_COOKIE_HTTPONLY = True
+CSRF_COOKIE_SECURE = not DEBUG
+SESSION_COOKIE_SECURE = not DEBUG
+SECURE_SSL_REDIRECT = not DEBUG
+SECURE_REFERRER_POLICY = 'same-origin'
+
 # Crispy Forms UI Configuration
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
 CRISPY_TEMPLATE_PACK = "bootstrap5"
 
-# Silence django-ratelimit's strict cache backend check for local development
-SILENCED_SYSTEM_CHECKS = ['django_ratelimit.E003']
+# Allow django-ratelimit to run in development without an external cache server
+SILENCED_SYSTEM_CHECKS = ['django_ratelimit.E003', 'django_ratelimit.W001']

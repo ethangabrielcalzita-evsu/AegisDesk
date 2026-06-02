@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+
+{% block title %}Ticket Detail - AegisDesk{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center mt-4">
+    <div class="col-xl-8 col-lg-10">
+        <div class="card aegis-card shadow-lg">
+            <div class="card-body p-4">
+                <div class="d-flex flex-column flex-md-row justify-content-between align-items-start gap-3 mb-4">
+                    <div>
+                        <h2 class="page-title mb-2">{{ ticket.title }}</h2>
+                        <div class="d-flex flex-wrap gap-2">
+                            <span class="badge badge-gold">{{ ticket.get_category_display }}</span>
+                            <span class="badge badge-gold">{{ ticket.get_severity_display }}</span>
+                        </div>
+                    </div>
+                    <div class="text-md-end text-muted">
+                        <div>Reported by {{ ticket.reported_by.username }}</div>
+                        <div>{{ ticket.created_at|date:'M d, Y H:i' }}</div>
+                    </div>
+                </div>
+
+                <div class="mb-4 rounded-4 p-4" style="background: rgba(212,175,55,0.07); border:1px solid rgba(212,175,55,0.14);">
+                    <h6 class="text-uppercase text-muted mb-2">Description</h6>
+                    <p class="fs-6 mb-0">{{ ticket.description }}</p>
+                </div>
+
+                <div class="row g-3 mb-4">
+                    <div class="col-md-6">
+                        <div class="card aegis-card p-3 border-gold">
+                            <h6 class="mb-2 text-muted">Current Stage</h6>
+                            <p class="mb-0 fs-5">{{ ticket.get_nist_stage_display }}</p>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card aegis-card p-3 border-gold">
+                            <h6 class="mb-2 text-muted">Affected Asset</h6>
+                            <p class="mb-0 fs-5">{{ ticket.affected_asset }}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="d-flex flex-wrap gap-2">
+                    {% if user.is_staff %}
+                        <a class="btn btn-gold" href="{% url 'update_incident' ticket.id %}">Update Incident Stage</a>
+                    {% endif %}
+                    <a class="btn btn-outline-gold" href="{% url 'my_tickets' %}">Back to My Tickets</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

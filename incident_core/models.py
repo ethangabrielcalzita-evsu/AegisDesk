@@ -34,8 +34,14 @@ class IncidentTicket(models.Model):
         ('CRITICAL', 'Critical'),
     ]
 
+    CATEGORY_CHOICES = [
+        ('IT_SUPPORT', 'IT Support'),
+        ('SECURITY_BREACH', 'Security Breach'),
+    ]
+
     title = models.CharField(max_length=200)
     description = models.TextField()
+    category = models.CharField(max_length=20, choices=CATEGORY_CHOICES, default='IT_SUPPORT')
     nist_stage = models.CharField(max_length=30, choices=NIST_STAGES, default='PREPARATION')
     severity = models.CharField(max_length=10, choices=SEVERITY_LEVELS, default='LOW')
     affected_asset = models.ForeignKey(Asset, on_delete=models.CASCADE, related_name='incidents')

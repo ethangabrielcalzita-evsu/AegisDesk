@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}Submit Ticket - AegisDesk{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-xl-7 col-lg-8 col-md-10">
+        <div class="card aegis-card mt-4 shadow-lg">
+            <div class="card-header hero-panel d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-3 py-4">
+                <div>
+                    <h2 class="page-title mb-2">Submit New Ticket</h2>
+                    <p class="text-muted mb-0">Log a support request or security incident with confidence. Our team will review and respond promptly.</p>
+                </div>
+                <span class="badge badge-gold py-2 px-3">5 submissions / min</span>
+            </div>
+            <div class="card-body p-4">
+                <form method="post">
+                    {% csrf_token %}
+                    {{ form|crispy }}
+                    <div class="d-grid mt-4">
+                        <button type="submit" class="btn btn-gold btn-lg">Submit Ticket</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

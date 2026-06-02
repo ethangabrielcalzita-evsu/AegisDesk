@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+
+{% block title %}Incident Queue - AegisDesk{% endblock %}
+
+{% block content %}
+<div class="row mt-4">
+    <div class="col-12 mb-4">
+        <div class="card aegis-card p-4 shadow-lg">
+            <div class="d-flex flex-column flex-md-row justify-content-between align-items-start gap-3">
+                <div>
+                    <h2 class="page-title mb-2">Incident Queue</h2>
+                    <p class="text-muted mb-0">Review open tickets, assign priority, and bulk close resolved incidents.</p>
+                </div>
+                <a class="btn btn-outline-gold btn-lg" href="{% url 'manager_dashboard' %}">Back to Dashboard</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<form method="post">
+    {% csrf_token %}
+    <div class="table-responsive rounded-4 overflow-hidden shadow-sm">
+        <table class="table table-hover mb-0 align-middle">
+            <thead>
+                <tr>
+                    <th scope="col">Select</th>
+                    <th scope="col">Title</th>
+                    <th scope="col">Category</th>
+                    <th scope="col">Severity</th>
+                    <th scope="col">Status</th>
+                    <th scope="col">Reported By</th>
+                    <th scope="col">Created</th>
+                    <th scope="col">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for ticket in tickets %}
+                    <tr>
+                        <td><input class="form-check-input" type="checkbox" name="selected_tickets" value="{{ ticket.id }}" id="ticket-{{ ticket.id }}"></td>
+                        <td>{{ ticket.title }}</td>
+                        <td>{{ ticket.get_category_display }}</td>
+                        <td>{{ ticket.get_severity_display }}</td>
+                        <td>{{ ticket.get_nist_stage_display }}</td>
+                        <td>{{ ticket.reported_by.username }}</td>
+                        <td>{{ ticket.created_at|date:'M d, Y' }}</td>
+                        <td><a class="btn btn-sm btn-outline-gold" href="{% url 'update_incident' ticket.id %}">Update</a></td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="8" class="text-center text-muted py-4">No open tickets available.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div class="d-flex justify-content-end mt-3">
+        <button type="submit" class="btn btn-gold">Bulk Close Selected</button>
+    </div>
+</form>
+{% endblock %}

@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+
+{% block title %}My Tickets - AegisDesk{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center mt-4">
+    <div class="col-12">
+        <div class="d-flex flex-column flex-md-row align-items-start align-items-md-center justify-content-between mb-4 gap-3">
+            <div>
+                <h2 class="page-title mb-1">My Ticket History</h2>
+                <p class="text-muted mb-0">Track progress for every request you have submitted to the response team.</p>
+            </div>
+            <a class="btn btn-gold btn-lg" href="{% url 'submit_ticket' %}">Submit New Ticket</a>
+        </div>
+
+        {% if tickets %}
+            <div class="table-responsive rounded-4 overflow-hidden shadow-sm">
+                <table class="table table-dark table-hover mb-0 align-middle">
+                    <thead>
+                        <tr>
+                            <th>Title</th>
+                            <th>Category</th>
+                            <th>Severity</th>
+                            <th>Status</th>
+                            <th>Created</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for ticket in tickets %}
+                            <tr>
+                                <td>{{ ticket.title }}</td>
+                                <td>{{ ticket.get_category_display }}</td>
+                                <td>{{ ticket.get_severity_display }}</td>
+                                <td>{{ ticket.get_nist_stage_display }}</td>
+                                <td>{{ ticket.created_at|date:"M d, Y H:i" }}</td>
+                                <td><a href="{% url 'ticket_detail' ticket.id %}" class="btn btn-sm btn-outline-gold">View</a></td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <div class="card aegis-card p-5 text-center mt-3">
+                <h5 class="mb-3">No tickets found</h5>
+                <p class="text-muted mb-4">You don't have any open tickets yet. Submit a new incident to get assistance started.</p>
+                <a class="btn btn-gold" href="{% url 'submit_ticket' %}">Submit Ticket</a>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

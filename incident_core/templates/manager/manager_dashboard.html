@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block title %}Manager Dashboard - AegisDesk{% endblock %}
+
+{% block content %}
+<div class="row mt-4">
+    <div class="col-12 mb-4">
+        <div class="card aegis-card shadow-lg p-4 hero-panel">
+            <div class="d-flex flex-column flex-md-row justify-content-between align-items-start gap-3">
+                <div>
+                    <h2 class="page-title mb-2">Manager Control Center</h2>
+                    <p class="text-muted mb-0">Monitor incident progress, review priority metrics, and keep the response team aligned.</p>
+                </div>
+                <a class="btn btn-gold btn-lg" href="{% url 'ticket_list' %}">View Incident Queue</a>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row g-3">
+    <div class="col-md-4">
+        <div class="card aegis-card p-4 border-gold shadow-lg">
+            <h5 class="text-muted">Open Incidents</h5>
+            <p class="display-6 mb-0">{{ total_open }}</p>
+        </div>
+    </div>
+    {% for label, count in stage_counts.items %}
+        <div class="col-md-4">
+            <div class="card aegis-card p-4 shadow-lg">
+                <h6 class="text-muted mb-3">{{ label }}</h6>
+                <p class="display-5 mb-0">{{ count }}</p>
+            </div>
+        </div>
+    {% endfor %}
+</div>
+{% endblock %}
