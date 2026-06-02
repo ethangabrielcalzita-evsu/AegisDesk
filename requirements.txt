@@ -18,6 +18,7 @@ djangorestframework-simplejwt==5.3.1
 filelock==3.29.0
 fonttools==4.63.0
 fpdf2==2.8.7
+gunicorn==26.0.0
 idna==3.18
 license-expression==30.4.4
 markdown-it-py==4.2.0
