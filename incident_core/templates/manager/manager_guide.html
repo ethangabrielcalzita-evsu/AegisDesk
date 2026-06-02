@@ -1,0 +1,97 @@
+{% extends 'base.html' %}
+
+{% block title %}Manager Guide - AegisDesk{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-lg-12">
+        <h1 class="page-title mb-2">Manager User Guide</h1>
+        <p class="text-muted">Instructions for IT/SecOps managers to triage incidents, update NIST stages, and close tickets.</p>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-lg-12">
+        <div class="card aegis-card p-4 shadow-sm">
+            <h5 class="fw-semibold mb-3">Your Role</h5>
+            <p class="text-muted mb-0">As a manager, you have access to all incidents and can move tickets through the NIST incident response lifecycle. Your work supports secure, auditable incident handling.</p>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4">
+    <div class="col-lg-6">
+        <div class="card aegis-card p-4 shadow-sm">
+            <h5 class="fw-semibold mb-3">1. Review the Incident Queue</h5>
+            <p class="text-muted">Use the <strong>Incident Queue</strong> to see all open incidents that require triage or action.</p>
+            <ul class="text-muted">
+                <li>Sort incidents by severity and submission time.</li>
+                <li>Identify critical or high-priority tickets first.</li>
+                <li>Check incident details to verify affected assets and reported symptoms.</li>
+            </ul>
+        </div>
+    </div>
+    <div class="col-lg-6">
+        <div class="card aegis-card p-4 shadow-sm">
+            <h5 class="fw-semibold mb-3">2. Triage and Update Stages</h5>
+            <p class="text-muted">Use the manager update form to move an incident through the NIST stages.</p>
+            <ul class="text-muted">
+                <li><strong>Preparation</strong>: Validate and classify the incident.</li>
+                <li><strong>Detection & Analysis</strong>: Investigate and confirm scope.</li>
+                <li><strong>Containment, Eradication & Recovery</strong>: Mitigate and remove threats.</li>
+                <li><strong>Post-Incident Activity</strong>: Document lessons learned.</li>
+                <li><strong>Closed</strong>: Mark resolved when the incident is complete.</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4 mt-1">
+    <div class="col-lg-12">
+        <div class="card aegis-card p-4 shadow-sm">
+            <h5 class="fw-semibold mb-3">3. Bulk Actions</h5>
+            <p class="text-muted">When multiple incidents are resolved, use the bulk close form to update them all at once.</p>
+            <ul class="text-muted">
+                <li>Select the tickets to close from the queue.</li>
+                <li>Confirm the stage and save the update.</li>
+                <li>All bulk changes are logged for audit purposes.</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4 mt-1">
+    <div class="col-lg-12">
+        <div class="card aegis-card p-4 shadow-sm">
+            <h5 class="fw-semibold mb-3">4. Use Manager Dashboard Metrics</h5>
+            <p class="text-muted">The manager dashboard shows key operational data to help prioritize response activity.</p>
+            <ul class="text-muted">
+                <li>Monitor open ticket totals and NIST stage distribution.</li>
+                <li>Watch critical/high severity counts and respond immediately.</li>
+                <li>Use the severity breakdown to balance workload and escalation.</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4 mt-1">
+    <div class="col-lg-12">
+        <div class="card aegis-card p-4 shadow-sm">
+            <h5 class="fw-semibold mb-3">5. Best Practices</h5>
+            <ul class="text-muted">
+                <li>Update stages promptly so employees can track progress.</li>
+                <li>Document actions clearly in ticket notes.</li>
+                <li>Close tickets only after all remediation steps are complete.</li>
+                <li>Use the audit log for accountability and compliance review.</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-5">
+    <div class="col-lg-12 d-flex gap-2 flex-wrap">
+        <a href="{% url 'ticket_list' %}" class="btn btn-gold">Open Incident Queue</a>
+        <a href="{% url 'manager_dashboard' %}" class="btn btn-outline-gold">Return to Dashboard</a>
+    </div>
+</div>
+{% endblock %}

@@ -51,6 +51,11 @@ def employee_dashboard(request):
 
 
 @login_required
+def employee_guide(request):
+    return render(request, 'employee_guide.html')
+
+
+@login_required
 @ratelimit(key='ip', rate='5/m', block=False)
 def submit_ticket(request):
     was_limited = getattr(request, 'limited', False)
@@ -132,6 +137,13 @@ def manager_dashboard(request):
         'user_type': 'manager',
     }
     return render(request, 'manager/manager_dashboard.html', context)
+
+
+@login_required
+def manager_guide(request):
+    if not _is_it_manager(request.user):
+        return render(request, 'unauthorized.html', status=403)
+    return render(request, 'manager/manager_guide.html')
 
 
 @login_required
