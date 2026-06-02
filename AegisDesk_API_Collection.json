@@ -1,0 +1,191 @@
+{
+  "info": {
+    "name": "AegisDesk API Collection",
+    "_postman_id": "8efe299b-ace5-46e6-8846-1af36d49c13f",
+    "description": "Pre-configured requests for all AegisDesk REST API endpoints.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://127.0.0.1:8000",
+      "type": "string"
+    },
+    {
+      "key": "access_token",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Obtain JWT Token",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "var json = pm.response.json();",
+              "pm.collectionVars.set('access_token', json.access);"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"username\": \"admin\", \"password\": \"password\"}"
+        },
+        "url": {
+          "raw": "{{base_url}}/incidents/api/token/",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "incidents",
+            "api",
+            "token",
+            ""
+          ]
+        },
+        "description": "Obtain a JWT access and refresh token pair. The test script automatically stores the access token in the {{access_token}} collection variable."
+      }
+    },
+    {
+      "name": "Refresh JWT Token",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"refresh\": \"{{refresh_token}}\"}"
+        },
+        "url": {
+          "raw": "{{base_url}}/incidents/api/token/refresh/",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "incidents",
+            "api",
+            "token",
+            "refresh",
+            ""
+          ]
+        },
+        "description": "Renew an access token using a valid refresh token."
+      }
+    },
+    {
+      "name": "Log Incident (Authenticated)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"title\": \"Test Incident\", \"description\": \"A test incident submitted via the API.\", \"severity\": \"medium\", \"affected_asset\": \"Web Server\", \"nist_stage\": \"detection\"}"
+        },
+        "url": {
+          "raw": "{{base_url}}/incidents/api/v1/log-incident/",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "incidents",
+            "api",
+            "v1",
+            "log-incident",
+            ""
+          ]
+        },
+        "description": "Submit a valid authenticated incident \u2014 expects 201 Created."
+      }
+    },
+    {
+      "name": "Log Incident (Unauthenticated \u2014 expects 401)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"title\": \"Unauthenticated Test\", \"description\": \"This request has no Authorization header.\", \"severity\": \"low\", \"affected_asset\": \"Unknown\", \"nist_stage\": \"detection\"}"
+        },
+        "url": {
+          "raw": "{{base_url}}/incidents/api/v1/log-incident/",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "incidents",
+            "api",
+            "v1",
+            "log-incident",
+            ""
+          ]
+        },
+        "description": "No Authorization header \u2014 expects 401 Unauthorized."
+      }
+    },
+    {
+      "name": "Log Incident (Missing title \u2014 expects 400)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"description\": \"This payload is missing the required title field.\", \"severity\": \"high\", \"affected_asset\": \"Database\", \"nist_stage\": \"containment\"}"
+        },
+        "url": {
+          "raw": "{{base_url}}/incidents/api/v1/log-incident/",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "incidents",
+            "api",
+            "v1",
+            "log-incident",
+            ""
+          ]
+        },
+        "description": "Authenticated but missing the required 'title' field \u2014 expects 400 Bad Request."
+      }
+    }
+  ]
+}

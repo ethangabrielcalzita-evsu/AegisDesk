@@ -1,5 +1,18 @@
 venv/
 __pycache__/
 aegis_cache_data/
+cache/
 *.pyc
+*.pyo
 db.sqlite3
+
+# Generated runtime artifacts
+AegisDesk_Security_Audit_Report.pdf
+audit_report_raw.txt
+aegis_audit.log
+
+# IDE / OS
+.vscode/
+.idea/
+*.DS_Store
+Thumbs.db
