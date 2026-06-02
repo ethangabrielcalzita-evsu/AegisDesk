@@ -28,7 +28,7 @@ DEBUG = True
 ALLOWED_HOSTS = []
 
 LOGIN_URL = '/accounts/login/'
-LOGIN_REDIRECT_URL = '/incidents/submit/'
+LOGIN_REDIRECT_URL = '/incidents/'
 LOGOUT_REDIRECT_URL = '/accounts/login/'
 
 

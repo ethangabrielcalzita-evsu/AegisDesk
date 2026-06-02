@@ -2,12 +2,52 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django_ratelimit.decorators import ratelimit
+from django.db.models import Q, Count
 from .forms import TicketSubmissionForm, NistTriageForm, BulkCloseForm
 from .models import IncidentTicket
 
 
 def _is_it_manager(user):
     return user.is_authenticated and user.is_staff
+
+
+@login_required
+def home(request):
+    """
+    Role-based dashboard router:
+    - IT/SecOps Managers → manager dashboard
+    - End-Users/Employees → employee dashboard
+    """
+    if _is_it_manager(request.user):
+        return redirect('manager_dashboard')
+    else:
+        return redirect('employee_dashboard')
+
+
+@login_required
+def employee_dashboard(request):
+    """
+    End-User / Employee Dashboard
+    Shows personal ticket metrics and recent submissions
+    """
+    user_tickets = IncidentTicket.objects.filter(reported_by=request.user).order_by('-created_at')
+    
+    # Personal stats
+    total_submitted = user_tickets.count()
+    open_tickets = user_tickets.exclude(nist_stage='CLOSED').count()
+    resolved_tickets = user_tickets.filter(nist_stage='CLOSED').count()
+    
+    # Recent tickets
+    recent_tickets = user_tickets[:5]
+    
+    context = {
+        'total_submitted': total_submitted,
+        'open_tickets': open_tickets,
+        'resolved_tickets': resolved_tickets,
+        'recent_tickets': recent_tickets,
+        'user_type': 'employee',
+    }
+    return render(request, 'employee_dashboard.html', context)
 
 
 @login_required
@@ -53,19 +93,45 @@ def ticket_detail(request, ticket_id):
 
 @login_required
 def manager_dashboard(request):
+    """
+    IT Manager / SecOps Dashboard
+    NIST Incident Response Framework tracking and incident metrics
+    """
     if not _is_it_manager(request.user):
         return render(request, 'unauthorized.html', status=403)
 
+    all_tickets = IncidentTicket.objects.all()
+    
+    # NIST stage breakdown
     stage_counts = {
-        label: IncidentTicket.objects.filter(nist_stage=value).count()
+        label: all_tickets.filter(nist_stage=value).count()
         for value, label in IncidentTicket.NIST_STAGES
     }
-    total_open = IncidentTicket.objects.exclude(nist_stage='CLOSED').count()
-
-    return render(request, 'manager/manager_dashboard.html', {
+    
+    # Key metrics
+    total_tickets = all_tickets.count()
+    total_open = all_tickets.exclude(nist_stage='CLOSED').count()
+    total_closed = all_tickets.filter(nist_stage='CLOSED').count()
+    critical_high = all_tickets.filter(severity__in=['CRITICAL', 'HIGH']).count()
+    
+    # Severity breakdown
+    severity_breakdown = {
+        'critical': all_tickets.filter(severity='CRITICAL').count(),
+        'high': all_tickets.filter(severity='HIGH').count(),
+        'medium': all_tickets.filter(severity='MEDIUM').count(),
+        'low': all_tickets.filter(severity='LOW').count(),
+    }
+    
+    context = {
         'stage_counts': stage_counts,
         'total_open': total_open,
-    })
+        'total_tickets': total_tickets,
+        'total_closed': total_closed,
+        'critical_high': critical_high,
+        'severity_breakdown': severity_breakdown,
+        'user_type': 'manager',
+    }
+    return render(request, 'manager/manager_dashboard.html', context)
 
 
 @login_required

@@ -3,33 +3,152 @@
 {% block title %}Manager Dashboard - AegisDesk{% endblock %}
 
 {% block content %}
-<div class="row mt-4">
-    <div class="col-12 mb-4">
-        <div class="card aegis-card shadow-lg p-4 hero-panel">
-            <div class="d-flex flex-column flex-md-row justify-content-between align-items-start gap-3">
+<div class="row mb-5">
+    <div class="col-lg-12">
+        <h1 class="page-title mb-1">IT/SecOps Control Center</h1>
+        <p class="text-muted">NIST Incident Response Lifecycle management, real-time metrics, and case triage.</p>
+    </div>
+</div>
+
+<!-- Key Metrics -->
+<div class="row mb-5">
+    <div class="col-md-3 mb-3">
+        <div class="card aegis-card p-4 shadow-sm">
+            <div class="d-flex justify-content-between align-items-start">
                 <div>
-                    <h2 class="page-title mb-2">Manager Control Center</h2>
-                    <p class="text-muted mb-0">Monitor incident progress, review priority metrics, and keep the response team aligned.</p>
+                    <p class="text-muted mb-1 small">Total Incidents</p>
+                    <h3 class="page-title mb-0">{{ total_tickets }}</h3>
                 </div>
-                <a class="btn btn-gold btn-lg" href="{% url 'ticket_list' %}">View Incident Queue</a>
+                <span class="badge badge-gold px-3 py-2">📊</span>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-3">
+        <div class="card aegis-card p-4 shadow-sm">
+            <div class="d-flex justify-content-between align-items-start">
+                <div>
+                    <p class="text-muted mb-1 small">Open / Active</p>
+                    <h3 class="page-title mb-0">{{ total_open }}</h3>
+                </div>
+                <span class="badge badge-gold px-3 py-2">🔴</span>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-3">
+        <div class="card aegis-card p-4 shadow-sm">
+            <div class="d-flex justify-content-between align-items-start">
+                <div>
+                    <p class="text-muted mb-1 small">Resolved</p>
+                    <h3 class="page-title mb-0">{{ total_closed }}</h3>
+                </div>
+                <span class="badge badge-gold px-3 py-2">✓</span>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-3">
+        <div class="card aegis-card p-4 shadow-sm">
+            <div class="d-flex justify-content-between align-items-start">
+                <div>
+                    <p class="text-muted mb-1 small">Critical/High</p>
+                    <h3 class="page-title mb-0">{{ critical_high }}</h3>
+                </div>
+                <span class="badge badge-gold px-3 py-2">⚠️</span>
             </div>
         </div>
     </div>
 </div>
-<div class="row g-3">
-    <div class="col-md-4">
-        <div class="card aegis-card p-4 border-gold shadow-lg">
-            <h5 class="text-muted">Open Incidents</h5>
-            <p class="display-6 mb-0">{{ total_open }}</p>
-        </div>
-    </div>
-    {% for label, count in stage_counts.items %}
-        <div class="col-md-4">
-            <div class="card aegis-card p-4 shadow-lg">
-                <h6 class="text-muted mb-3">{{ label }}</h6>
-                <p class="display-5 mb-0">{{ count }}</p>
+
+<!-- NIST Incident Response Stages -->
+<div class="row mb-5">
+    <div class="col-lg-12">
+        <div class="card aegis-card p-4 shadow-sm">
+            <h5 class="fw-semibold mb-4">NIST Incident Response Lifecycle</h5>
+            <div class="row g-3">
+                {% for label, count in stage_counts.items %}
+                    <div class="col-md-4">
+                        <div class="border-left-gold p-3 rounded-3" style="border-left: 4px solid #d4af37;">
+                            <p class="text-muted mb-2 small">{{ label }}</p>
+                            <h4 class="page-title mb-0">{{ count }} incidents</h4>
+                        </div>
+                    </div>
+                {% endfor %}
             </div>
         </div>
-    {% endfor %}
+    </div>
+</div>
+
+<!-- Severity Breakdown -->
+<div class="row mb-5">
+    <div class="col-lg-12">
+        <div class="card aegis-card p-4 shadow-sm">
+            <h5 class="fw-semibold mb-4">Severity Distribution</h5>
+            <div class="row g-3">
+                <div class="col-md-3">
+                    <div class="p-3 rounded-3" style="background: rgba(220,53,69,0.1); border-left: 4px solid #dc3545;">
+                        <p class="text-muted mb-1 small">🔴 Critical</p>
+                        <h4 class="page-title mb-0">{{ severity_breakdown.critical }}</h4>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="p-3 rounded-3" style="background: rgba(255,193,7,0.1); border-left: 4px solid #ffc107;">
+                        <p class="text-muted mb-1 small">🟠 High</p>
+                        <h4 class="page-title mb-0">{{ severity_breakdown.high }}</h4>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="p-3 rounded-3" style="background: rgba(23,162,184,0.1); border-left: 4px solid #17a2b8;">
+                        <p class="text-muted mb-1 small">🟡 Medium</p>
+                        <h4 class="page-title mb-0">{{ severity_breakdown.medium }}</h4>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="p-3 rounded-3" style="background: rgba(40,167,69,0.1); border-left: 4px solid #28a745;">
+                        <p class="text-muted mb-1 small">🟢 Low</p>
+                        <h4 class="page-title mb-0">{{ severity_breakdown.low }}</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Quick Actions -->
+<div class="row mb-5">
+    <div class="col-lg-12">
+        <div class="card aegis-card p-4 shadow-sm">
+            <h5 class="fw-semibold mb-3">Quick Actions</h5>
+            <div class="d-flex gap-2 flex-wrap">
+                <a href="{% url 'ticket_list' %}" class="btn btn-gold">
+                    📋 View Incident Queue
+                </a>
+                <a href="/admin/" class="btn btn-outline-gold">
+                    ⚙️ Admin Console
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Role Info -->
+<div class="row">
+    <div class="col-lg-12">
+        <div class="card aegis-card p-4 shadow-sm">
+            <h5 class="fw-semibold mb-3">Your SecOps Role</h5>
+            <p class="text-muted mb-2">
+                <strong>You are an IT Manager / Security Operations Team Member.</strong> Your responsibilities:
+            </p>
+            <ul class="text-muted">
+                <li>Triage incoming incident tickets and assign severity levels</li>
+                <li>Track incident progress through the NIST Incident Response stages</li>
+                <li>Utilize bulk-action checkboxes to efficiently close resolved incidents</li>
+                <li>Every action you take is logged for chain-of-custody and audit compliance</li>
+                <li>Monitor the incident queue for critical and high-severity events</li>
+            </ul>
+            <hr class="border-gold">
+            <p class="small text-muted mb-0">
+                Your actions are recorded in the audit log at <code>aegis_audit.log</code> with full user attribution and timestamps.
+            </p>
+        </div>
+    </div>
 </div>
 {% endblock %}

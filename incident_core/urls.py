@@ -4,6 +4,8 @@ from . import views
 from .api_views import AutomatedIncidentIngestView
 
 urlpatterns = [
+    path('', views.home, name='home'),
+    path('employee/dashboard/', views.employee_dashboard, name='employee_dashboard'),
     path('submit/', views.submit_ticket, name='submit_ticket'),
     path('submit/success/', views.ticket_success, name='ticket_success'),
     path('my-tickets/', views.my_tickets, name='my_tickets'),
