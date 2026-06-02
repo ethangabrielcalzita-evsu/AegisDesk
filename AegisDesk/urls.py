@@ -12,7 +12,7 @@ urlpatterns = [
     path('accounts/logout/', LogoutView.as_view(next_page='/accounts/login/'), name='logout'),
     path('accounts/', include('django.contrib.auth.urls')),
     path('incidents/', include('incident_core.urls')),
-    path('', RedirectView.as_view(url='/incidents/submit/', permanent=False)),
+    path('', RedirectView.as_view(url='/incidents/', permanent=False)),
 ]
 
 handler403 = 'incident_core.views.unauthorized_view'

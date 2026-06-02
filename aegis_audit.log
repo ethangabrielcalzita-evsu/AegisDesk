@@ -1,2 +1,14 @@
 INFO 2026-05-31 15:00:07,400 models [User:System_Automated_API] New incident registered. Title: 'Brute Force Attempts Detected' for Asset: Primary_AD_Server
 INFO 2026-05-31 15:00:07,414 models [User:System_Automated_API] New incident registered. Title: 'S3 Object Exposure Leak' for Asset: AWS_S3_PII_Bucket
+INFO 2026-06-02 21:47:11,989 models [User:System_Automated_API] New incident registered. Title: 'Brute Force Attempts Detected' for Asset: Primary_AD_Server
+INFO 2026-06-02 21:47:12,007 models [User:System_Automated_API] New incident registered. Title: 'S3 Object Exposure Leak' for Asset: AWS_S3_PII_Bucket
+INFO 2026-06-02 22:00:32,527 models [User:employee] New incident registered. Title: 'test log 1' for Asset: Primary_AD_Server
+INFO 2026-06-02 22:01:27,199 models [User:employee] New incident registered. Title: 'test log to resolve 1' for Asset: Primary_AD_Server
+INFO 2026-06-02 22:02:00,298 models [User:admin] Ticket #4 modified. Stage altered from 'PREPARATION' to 'DETECTION_ANALYSIS'.
+INFO 2026-06-02 22:03:09,228 models [User:admin] Ticket #4 modified. Stage altered from 'DETECTION_ANALYSIS' to 'CONTAINMENT_ERADICATION'.
+INFO 2026-06-02 22:05:09,176 models [User:admin] Ticket #4 modified. Stage altered from 'CONTAINMENT_ERADICATION' to 'POST_INCIDENT'.
+INFO 2026-06-03 00:59:09,123 models [User:admin] Ticket #4 modified. Stage altered from 'POST_INCIDENT' to 'CLOSED'.
+INFO 2026-06-03 01:01:06,375 models [User:admin] Ticket #3 modified. Stage altered from 'PREPARATION' to 'DETECTION_ANALYSIS'.
+INFO 2026-06-03 01:04:09,491 models [User:admin] Ticket #3 modified. Stage altered from 'DETECTION_ANALYSIS' to 'CONTAINMENT_ERADICATION'.
+INFO 2026-06-03 01:39:00,893 models [User:admin] Ticket #3 modified. Stage altered from 'CONTAINMENT_ERADICATION' to 'POST_INCIDENT'.
+INFO 2026-06-03 01:39:19,085 models [User:admin] Ticket #3 modified. Stage altered from 'POST_INCIDENT' to 'CLOSED'.

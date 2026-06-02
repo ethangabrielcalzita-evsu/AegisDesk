@@ -30,6 +30,10 @@ def employee_dashboard(request):
     End-User / Employee Dashboard
     Shows personal ticket metrics and recent submissions
     """
+    # Managers should not access employee dashboard
+    if _is_it_manager(request.user):
+        return redirect('manager_dashboard')
+    
     user_tickets = IncidentTicket.objects.filter(reported_by=request.user).order_by('-created_at')
     
     # Personal stats
@@ -52,12 +56,21 @@ def employee_dashboard(request):
 
 @login_required
 def employee_guide(request):
+    # Managers should not access employee guide
+    if _is_it_manager(request.user):
+        return redirect('manager_guide')
+    
     return render(request, 'employee_guide.html')
 
 
 @login_required
 @ratelimit(key='ip', rate='5/m', block=False)
 def submit_ticket(request):
+    # Managers should not submit tickets - redirect them to manager dashboard
+    if _is_it_manager(request.user):
+        messages.warning(request, 'Managers cannot submit tickets. This page is for employees only.')
+        return redirect('manager_dashboard')
+    
     was_limited = getattr(request, 'limited', False)
     if was_limited:
         messages.error(request, 'Too many requests. Please wait before submitting another ticket.')
@@ -79,11 +92,20 @@ def submit_ticket(request):
 
 @login_required
 def ticket_success(request):
+    # Managers should not access the ticket success page
+    if _is_it_manager(request.user):
+        return redirect('manager_dashboard')
+    
     return render(request, 'tickets/success.html')
 
 
 @login_required
 def my_tickets(request):
+    # Managers should not access "my tickets" - redirect to ticket list
+    if _is_it_manager(request.user):
+        messages.info(request, 'Managers should use the Manager Ticket Queue.')
+        return redirect('ticket_list')
+    
     tickets = IncidentTicket.objects.filter(reported_by=request.user).order_by('-created_at')
     return render(request, 'tickets/my_tickets.html', {'tickets': tickets})
 

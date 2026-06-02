@@ -400,6 +400,459 @@ This project is open source and available under the MIT License.
 
 For issues, questions, or suggestions, please create an issue in the GitHub repository.
 
+## Team Roles & Responsibilities
+
+AegisDesk is developed and presented by a specialized team of five engineers, each responsible for specific technical domains and demonstration components during the project defense.
+
+### Member 1: Lead Cloud & DevOps Engineer
+
+**Development Responsibilities:**
+- Manages the PaaS deployment (e.g., Render or Railway)
+- Configures environment variables securely
+- Provisions the PostgreSQL database
+- Integrates Cloudinary for media storage
+
+**Presentation Responsibilities:**
+- Opens the defense
+- Demonstrates the live application
+- Explains the cloud architecture
+- Proves the secure handling of environment variables
+
+### Member 2: API & IAM (Identity Access) Engineer
+
+**Development Responsibilities:**
+- Builds the DRF REST API
+- Implements JWT authentication
+- Automates role seeding
+- Designs the Serializer field-level masking logic
+
+**Presentation Responsibilities:**
+- Conducts a live Postman demonstration showing JWT token generation
+- Demonstrates role-based API responses
+- Showcases the masked vs. unmasked data twist
+
+### Member 3: Database Architect & RBAC Lead
+
+**Development Responsibilities:**
+- Designs primary models
+- Enforces Anti-IDOR logic
+- Builds "Mine/All" view querysets
+- Implements manager-only bulk update functionalities
+
+**Presentation Responsibilities:**
+- Demonstrates horizontal privilege escalation prevention (attempting unauthorized ID access)
+- Showcases bulk operations executing securely
+
+### Member 4: Frontend UI & Component Engineer
+
+**Development Responsibilities:**
+- Designs base templates
+- Implements interactive dashboard filtering (dates, statuses)
+- Builds inline formsets
+- Creates custom template tags
+
+**Presentation Responsibilities:**
+- Walks through the UI/UX
+- Demonstrates pagination persisting with active filters
+- Highlights formset data entry and custom tag logic
+
+### Member 5: DevSecOps & Compliance Analyst
+
+**Development Responsibilities:**
+- Implements active defense (django-axes, ratelimiting, honeypots)
+- NIST-aligned Python audit logging
+- Runs Bandit/pip-audit scans
+
+**Presentation Responsibilities:**
+- Executes live simulated attacks (e.g., triggering a lockout or ratelimit)
+- Displays the audit logs
+- Presents the clean results of the check --deploy command
+
+---
+
+## Demonstration Guide
+
+This section provides step-by-step instructions for each team member to demonstrate their contributions during the project defense.
+
+### Member 1: Cloud & DevOps Demonstration
+
+**Duration**: 5-7 minutes
+
+**Pre-Demo Checklist:**
+- [ ] Live application deployed and accessible
+- [ ] Environment variables configured in PaaS dashboard
+- [ ] PostgreSQL database provisioned and connected
+- [ ] Cloudinary account configured (if applicable)
+
+**Demonstration Steps:**
+
+1. **Opening Statement** (30 seconds)
+   - Introduce the project: "AegisDesk is an enterprise incident management system following NIST guidelines"
+   - Brief overview of tech stack: Django, PostgreSQL, REST API, JWT authentication
+
+2. **Live Application Tour** (2 minutes)
+   - Open the live deployed URL
+   - Show the login page and mention authentication requirements
+   - Log in as an employee user
+   - Navigate through the employee dashboard
+   - Log out and log in as a manager
+   - Show the manager dashboard with metrics
+
+3. **Cloud Architecture Explanation** (2 minutes)
+   - Open the PaaS dashboard (Render/Railway)
+   - Explain the deployment architecture:
+     - Web service configuration
+     - PostgreSQL database instance
+     - Environment variable management
+   - Show the deployment logs (last successful deployment)
+   - Explain auto-deploy from GitHub integration
+
+4. **Secure Environment Variables** (1-2 minutes)
+   - Navigate to environment variables section in PaaS dashboard
+   - Show (but don't reveal values) of:
+     - `DJANGO_SECRET_KEY`
+     - `DATABASE_URL`
+     - `ALLOWED_HOSTS`
+     - Any API keys (Cloudinary, etc.)
+   - Explain: "These are never committed to version control"
+   - Show `.gitignore` file excluding `.env` files
+
+5. **Database Connection Proof** (1 minute)
+   - Open database dashboard
+   - Show connection details (hide credentials)
+   - Run a simple query showing data exists:
+     ```sql
+     SELECT COUNT(*) FROM incident_core_incidentticket;
+     ```
+   - Show the database is actively being used by the application
+
+**Key Talking Points:**
+- "Our application is production-ready and follows 12-factor app principles"
+- "All sensitive configuration is externalized via environment variables"
+- "Database is isolated and accessed via encrypted connections"
+- "Auto-deployment ensures rapid iteration and continuous delivery"
+
+---
+
+### Member 2: API & IAM Demonstration
+
+**Duration**: 5-7 minutes
+
+**Pre-Demo Checklist:**
+- [ ] Postman installed with AegisDesk collection imported
+- [ ] Test user credentials ready (employee and manager)
+- [ ] API endpoints documented and tested
+
+**Demonstration Steps:**
+
+1. **JWT Token Generation** (2 minutes)
+   - Open Postman
+   - Show the token endpoint: `POST /incidents/api/token/`
+   - Request body:
+     ```json
+     {
+       "username": "employee_user",
+       "password": "test_password"
+     }
+     ```
+   - Execute the request
+   - Show the response with `access` and `refresh` tokens
+   - Copy the access token
+   - Explain: "Access tokens expire in 5 minutes, refresh tokens in 24 hours"
+
+2. **Authenticated API Call** (2 minutes)
+   - Show the log incident endpoint: `POST /incidents/api/v1/log-incident/`
+   - Add Authorization header: `Bearer [access_token]`
+   - Request body:
+     ```json
+     {
+       "title": "API Test Incident",
+       "description": "Testing automated incident logging",
+       "severity": "HIGH",
+       "affected_asset": 1,
+       "nist_stage": "DETECTION_ANALYSIS"
+     }
+     ```
+   - Execute the request
+   - Show 201 Created response
+   - Navigate to the web UI and show the ticket was created
+
+3. **Unauthorized Access Attempt** (1 minute)
+   - Remove the Authorization header
+   - Execute the same request
+   - Show 401 Unauthorized response
+   - Explain: "All API endpoints require valid JWT authentication"
+
+4. **Role-Based API Response** (2 minutes)
+   - Get a new token for a manager user
+   - Call a "list incidents" endpoint (if available)
+   - Show manager can see all incidents
+   - Get token for employee user
+   - Call same endpoint
+   - Show employee sees only their tickets
+   - Explain: "Serializers enforce field-level permissions based on user role"
+
+5. **Token Refresh** (1 minute)
+   - Show `POST /incidents/api/token/refresh/`
+   - Use the refresh token from step 1
+   - Get a new access token without re-entering credentials
+
+**Key Talking Points:**
+- "JWT tokens are stateless and cryptographically signed"
+- "Short-lived access tokens minimize exposure from token theft"
+- "API enforces the same RBAC rules as the web interface"
+- "Remote monitoring tools can automatically ingest incidents without human intervention"
+
+---
+
+### Member 3: Database & RBAC Demonstration
+
+**Duration**: 5-7 minutes
+
+**Pre-Demo Checklist:**
+- [ ] Multiple test users created (employee1, employee2, manager)
+- [ ] Test incident tickets created by different users
+- [ ] Browser developer tools ready for URL manipulation
+- [ ] Database query tool ready (Django admin or shell)
+
+**Demonstration Steps:**
+
+1. **Model Structure Overview** (1 minute)
+   - Open `incident_core/models.py` in the code editor
+   - Highlight the `IncidentTicket` model
+   - Point out key fields: `reported_by`, `nist_stage`, `severity`, `affected_asset`
+   - Show the `Asset` model with asset types
+
+2. **"Mine" vs "All" Querysets** (2 minutes)
+   - Log in as `employee1`
+   - Navigate to "My Tickets"
+   - Show only tickets created by `employee1`
+   - Open browser developer tools → Network tab
+   - Note the URL: `/incidents/my-tickets/`
+   - Log out and log in as manager
+   - Navigate to "Manager Tickets"
+   - Show ALL tickets from all users
+   - Explain the queryset filtering logic:
+     ```python
+     # Employee: tickets.filter(reported_by=request.user)
+     # Manager: tickets.all()
+     ```
+
+3. **Anti-IDOR Demonstration** (3 minutes)
+   - Still logged in as `employee1`
+   - Open a ticket detail page (their own ticket): `/incidents/ticket/5/`
+   - Note the ticket ID in the URL
+   - Manually change the URL to a ticket ID belonging to `employee2`: `/incidents/ticket/8/`
+   - Press Enter
+   - **Expected Result**: 403 Forbidden page or "Unauthorized" message
+   - Explain: "The view checks `ticket.reported_by != request.user` and blocks access"
+   - Show the code snippet from `views.py`:
+     ```python
+     if ticket.reported_by != request.user and not _is_it_manager(request.user):
+         return render(request, 'unauthorized.html', status=403)
+     ```
+
+4. **Manager-Only Bulk Update** (2 minutes)
+   - Log in as manager
+   - Navigate to "Manager Tickets" page
+   - Select multiple open tickets using checkboxes
+   - Click "Bulk Close" button
+   - Show success message: "X ticket(s) were closed successfully"
+   - Refresh the page
+   - Show the tickets are now removed from the open list (moved to CLOSED stage)
+   - Explain: "Only managers have access to this endpoint, enforced by `@login_required` and `_is_it_manager()` check"
+
+**Key Talking Points:**
+- "Horizontal privilege escalation is blocked at the view layer"
+- "Every query is filtered by ownership or role"
+- "IDOR attacks are mitigated by comparing `request.user` to resource ownership"
+- "Bulk operations are restricted to staff accounts only"
+
+---
+
+### Member 4: Frontend UI Demonstration
+
+**Duration**: 5-7 minutes
+
+**Pre-Demo Checklist:**
+- [ ] Multiple test tickets with varying dates and statuses created
+- [ ] Browser window at comfortable zoom level
+- [ ] Code editor open to template files
+
+**Demonstration Steps:**
+
+1. **Base Template Overview** (1 minute)
+   - Open `templates/base.html` in code editor
+   - Highlight key elements:
+     - Navigation bar with role-based menu items
+     - Bootstrap 5 integration
+     - Messages framework for alerts
+     - Block structure for inheritance
+   - Show how child templates extend base
+
+2. **Dashboard UI Walkthrough** (2 minutes)
+   - Navigate to employee dashboard
+   - Point out UI elements:
+     - Personal metrics cards (total submitted, open, resolved)
+     - Recent tickets table
+     - Color-coded severity badges
+     - NIST stage indicators
+   - Navigate to manager dashboard
+   - Show enhanced metrics:
+     - NIST stage breakdown chart
+     - Severity distribution
+     - Critical/high priority count
+
+3. **Interactive Filtering** (2 minutes)
+   - Navigate to "Manager Tickets" page with many tickets
+   - Show filter controls (date range, severity, status)
+   - Apply a filter (e.g., severity = HIGH)
+   - Show results update
+   - Add another filter (e.g., date range)
+   - Show combined filtering
+   - Explain: "Filters are applied via query parameters and preserved across pagination"
+
+4. **Pagination with Active Filters** (1 minute)
+   - With filters still active, navigate to page 2
+   - Show URL contains both pagination and filter parameters:
+     ```
+     ?severity=HIGH&page=2
+     ```
+   - Show filters remain active on page 2
+   - Navigate back to page 1
+   - Explain: "Django's pagination preserves query strings"
+
+5. **Inline Formsets / Form Interactions** (2 minutes)
+   - Navigate to "Submit Ticket" form
+   - Show form fields with proper styling (crispy-forms)
+   - Point out:
+     - Required field indicators
+     - Dropdown menus (severity, NIST stage, asset)
+     - Text area for description
+     - Form validation (try submitting empty)
+   - Show validation errors displayed inline
+   - Fill form correctly and submit
+   - Show success page with styled confirmation
+
+6. **Custom Template Tags** (1 minute, if implemented)
+   - Open a template file showing custom tag usage
+   - Example: `{% get_severity_badge ticket.severity %}`
+   - Show the output in the browser (color-coded badge)
+   - Briefly show the tag definition in `templatetags/` folder
+
+**Key Talking Points:**
+- "Bootstrap 5 provides responsive, mobile-friendly layouts"
+- "Crispy-forms reduces template boilerplate and ensures consistent styling"
+- "Filter state persists across pagination for better UX"
+- "Custom template tags encapsulate reusable UI logic"
+
+---
+
+### Member 5: DevSecOps & Compliance Demonstration
+
+**Duration**: 5-7 minutes
+
+**Pre-Demo Checklist:**
+- [ ] Test account credentials ready
+- [ ] Audit log file accessible
+- [ ] Bandit installed: `pip install bandit`
+- [ ] `python manage.py check --deploy` ready to run
+- [ ] Rate limiting configured and tested
+
+**Demonstration Steps:**
+
+1. **Rate Limiting Attack Simulation** (2 minutes)
+   - Open the submit ticket form
+   - Open browser developer tools → Network tab
+   - Submit a ticket normally (success)
+   - Rapidly submit 5 more tickets (use browser refresh or script)
+   - **Expected Result**: After 5 submissions in 1 minute, show error message:
+     ```
+     "Too many requests. Please wait before submitting another ticket."
+     ```
+   - Show 403 Forbidden response in Network tab
+   - Explain: "Rate limiting prevents automated abuse and DOS attacks"
+   - Show the code decorator:
+     ```python
+     @ratelimit(key='ip', rate='5/m', block=False)
+     ```
+
+2. **Audit Log Chain of Custody** (2 minutes)
+   - Open `aegis_audit.log` file
+   - Show recent entries with format:
+     ```
+     INFO 2026-06-02 10:15:33 models [User:jsmith] New incident registered. Title: 'VPN Outage' for Asset: Firewall-01
+     INFO 2026-06-02 11:42:07 models [User:it_manager] Ticket #14 modified. Stage altered from 'PREPARATION' to 'DETECTION_ANALYSIS'.
+     ```
+   - Create a new ticket via web UI
+   - Refresh the audit log
+   - Show the new entry with correct timestamp and user attribution
+   - Update a ticket's NIST stage as manager
+   - Show the stage change logged with before/after values
+   - Explain: "Every incident creation and modification is logged immutably"
+
+3. **NIST Compliance Demonstration** (1 minute)
+   - Show the NIST stage progression in a ticket:
+     - PREPARATION → DETECTION_ANALYSIS → CONTAINMENT_ERADICATION → POST_INCIDENT → CLOSED
+   - Explain: "This follows the NIST 800-61 Incident Response framework"
+   - Show audit log entries tracking stage transitions
+
+4. **Security Scanning with Bandit** (2 minutes)
+   - Open terminal
+   - Run Bandit scan:
+     ```bash
+     bandit -r incident_core/ AegisDesk/
+     ```
+   - Show the output (should be clean or minimal issues)
+   - Explain: "Bandit scans for common security issues in Python code"
+   - If issues found, explain they are false positives or low severity
+
+5. **Django Deployment Check** (2 minutes)
+   - Run Django's deployment checklist:
+     ```bash
+     python manage.py check --deploy
+     ```
+   - Show the output
+   - **Expected**: Clean output or only warnings (not errors)
+   - If warnings appear, explain each one:
+     - SECURE_SSL_REDIRECT (okay in dev, required in prod)
+     - SECURE_HSTS_SECONDS (production setting)
+   - Show `settings.py` security configurations:
+     ```python
+     SECURE_BROWSER_XSS_FILTER = True
+     X_FRAME_OPTIONS = 'DENY'
+     CSRF_COOKIE_HTTPONLY = True
+     SESSION_COOKIE_SECURE = True  # in production
+     ```
+
+6. **Additional Security Features** (1 minute, if time permits)
+   - Show CSRF token in form HTML (view source)
+   - Explain Django's built-in protections:
+     - SQL injection prevention (ORM parameterized queries)
+     - XSS protection (auto-escaping templates)
+     - Clickjacking protection (X-Frame-Options)
+
+**Key Talking Points:**
+- "Defense-in-depth: multiple layers of security controls"
+- "Audit logging provides forensic evidence and compliance records"
+- "Rate limiting prevents abuse without affecting legitimate users"
+- "Automated scanning catches security issues before deployment"
+- "Following NIST framework ensures industry-standard incident response"
+
+---
+
+## Defense Coordination Tips
+
+1. **Timing**: Each member should aim for 5-7 minutes. Total presentation: 25-35 minutes + Q&A
+2. **Handoffs**: End each section with a transition statement:
+   - "Now I'll hand it over to [Member 2] to demonstrate our API layer"
+3. **Backup Plans**: Have screenshots ready if live demos fail
+4. **Practice**: Run through the entire demo sequence at least twice
+5. **Questions**: Designate who answers questions in specific domains
+6. **Shared Screen**: Decide in advance who controls screen sharing for each section
+
+---
+
 ## Author
 
 **AegisDesk Development Team**

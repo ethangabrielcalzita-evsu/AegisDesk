@@ -6,6 +6,11 @@ cache/
 *.pyo
 db.sqlite3
 
+# Environment variables
+.env
+.env.local
+.env.production
+
 # Generated runtime artifacts
 AegisDesk_Security_Audit_Report.pdf
 audit_report_raw.txt
