@@ -50,6 +50,30 @@ AegisDesk/
 
 ```
 
+## Architecture Overview
+
+AegisDesk is built as a Django web application with separate UI and API layers:
+
+- **Web UI**: Django views and templates provide employee and manager dashboards, incident submission, and ticket detail workflows.
+- **Employee dashboard**: End users submit incidents and track only their own tickets.
+- **Manager dashboard**: IT/SecOps staff triage incidents, update NIST response stages, and manage the incident queue.
+- **API layer**: Django REST Framework exposes JWT-protected endpoints for remote monitoring tools and programmatic incident ingestion.
+- **Data model**: `IncidentTicket` captures incident details, severity, NIST stage, category, reporter, and affected asset relationships.
+- **Authentication**: Django session authentication for web users and Simple JWT for API clients.
+- **Security**: CSRF protection, secure cookies, rate limiting, audit logging, and role-based access control using `is_staff`.
+
+## Setup Process
+
+Follow these steps to install and run AegisDesk locally:
+
+1. Clone the repository.
+2. Create and activate a Python virtual environment.
+3. Install dependencies from `requirements.txt`.
+4. Apply database migrations with `python manage.py migrate`.
+5. Create a Django superuser with `python manage.py createsuperuser`.
+6. Optionally populate sample data with `python manage.py populate_incidents`.
+7. Start the development server with `python manage.py runserver`.
+
 ## Requirements
 
 - Python 3.9 or higher
@@ -308,6 +332,29 @@ The application includes rate limiting to prevent abuse:
   - Configure `ALLOWED_HOSTS` with your domain
   - Use environment variables for sensitive settings
   - Use a production database (PostgreSQL recommended)
+
+## Environment Variables
+
+For production deployment, these are the recommended environment variables to configure. The current repository uses static settings for development, but you should switch to env-driven settings before going live.
+
+- `DJANGO_SECRET_KEY` – secret key for cryptographic signing
+- `DJANGO_DEBUG` – `False` in production
+- `DJANGO_ALLOWED_HOSTS` – comma-separated hostnames
+- `DATABASE_URL` – production database URL (for example, PostgreSQL)
+- `REDIS_URL` – cache and rate limit backend URL if using Redis
+- `EMAIL_HOST` – SMTP server hostname
+- `EMAIL_PORT` – SMTP server port
+- `EMAIL_HOST_USER` – SMTP user
+- `EMAIL_HOST_PASSWORD` – SMTP password
+- `SECURE_SSL_REDIRECT` – `True` to enforce HTTPS in production
+- `SENTRY_DSN` – optional error monitoring DSN if using Sentry
+
+### Recommended production configuration
+1. Do not keep `DEBUG = True` in production.
+2. Replace the hardcoded `SECRET_KEY` in `AegisDesk/settings.py` with a call to `os.environ.get('DJANGO_SECRET_KEY')`.
+3. Set `ALLOWED_HOSTS` to the actual domain names or IP addresses.
+4. Use a production database such as PostgreSQL instead of SQLite.
+5. Use Redis for caching and rate limiting if you need high throughput.
 
 ## Troubleshooting
 
