@@ -29,6 +29,13 @@ DEBUG = True
 
 ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS", "localhost,127.0.0.1,127.0.0.1:8000").split(",")
 
+# CSRF Trusted Origins for secure HTTPS connections
+CSRF_TRUSTED_ORIGINS = [
+    "https://aegisdesk-production-1c5e.up.railway.app",
+    "https://*.up.railway.app",  # This allows any dynamic/custom subdomains on Railway
+]
+
+
 LOGIN_URL = '/accounts/login/'
 LOGIN_REDIRECT_URL = '/incidents/'
 LOGOUT_REDIRECT_URL = '/accounts/login/'
